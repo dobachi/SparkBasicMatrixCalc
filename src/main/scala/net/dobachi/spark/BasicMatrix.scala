@@ -11,7 +11,7 @@ import scala.reflect.ClassTag
  */
 @SerialVersionUID(1L)
 class BasicMatrix[T: ClassTag](rdd: RDD[BV[T]]) extends Serializable {
-  lazy val rddWithIndex: RDD[(Long, BV)] = rdd.zipWithIndex().map(p => (p._2, p._1))
+  lazy val rddWithIndex: RDD[(Long, BV[T])] = rdd.zipWithIndex().map(p => (p._2, p._1))
 
   private def join[T: ClassTag](other: RDD[BV[T]]): RDD[(BV[T], BV[T])] = {
     lazy val otherWithIndex: RDD[(Long, BV)] = other.zipWithIndex().map(p => (p._2, p._1))
