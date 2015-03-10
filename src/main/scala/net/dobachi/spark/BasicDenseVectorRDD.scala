@@ -8,12 +8,14 @@ import breeze.linalg.{DenseVector => BDV}
  * The helper class for calculation of two RDD which have matrix-like data.
  *
  * @param rdd RDD of Breeze DenseVector which has values of Double type.
- *
- * @note You can use BasicDenseVectorRDD object's implicit method
- *       to convert RDD[BDV[Double]] to RDD[Array[Double]] each other.
  */
 @SerialVersionUID(1L)
 class BasicDenseVectorRDD(rdd: RDD[BDV[Double]]) extends Serializable {
+
+  def this(rdd: RDD[Array[Double]]) = {
+    this(rdd.map(p => BDV(p)))
+  }
+
   lazy val rddWithIndex: RDD[(Long, BDV[Double])] = rdd.zipWithIndex().map(p => (p._2, p._1))
 
   private def join(other: RDD[BDV[Double]]): RDD[(BDV[Double], BDV[Double])] = {
@@ -21,36 +23,28 @@ class BasicDenseVectorRDD(rdd: RDD[BDV[Double]]) extends Serializable {
     rddWithIndex.join(otherWithIndex).map(p => (p._2._1, p._2._2))
   }
 
-  def :+(other: RDD[BDV[Double]]): RDD[BDV[Double]] = {
+  def :+(other: RDD[BDV[Double]]): BasicDenseVectorRDD = {
     val joined = join(other)
-    joined.map(p => p._1 :+ p._2)
+    val calculatedData = joined.map(p => p._1 :+ p._2)
+    new BasicDenseVectorRDD(calculatedData)
   }
 
-  def :-(other: RDD[BDV[Double]]): RDD[BDV[Double]] = {
+  def :-(other: RDD[BDV[Double]]): BasicDenseVectorRDD = {
     val joined = join(other)
-    joined.map(p => p._1 :- p._2)
+    val calculatedData = joined.map(p => p._1 :- p._2)
+    new BasicDenseVectorRDD(calculatedData)
   }
 
-  def :/(other: RDD[BDV[Double]]): RDD[BDV[Double]] = {
+  def :/(other: RDD[BDV[Double]]): BasicDenseVectorRDD = {
     val joined = join(other)
-    joined.map(p => p._1 :/ p._2)
+    val calculatedData = joined.map(p => p._1 :/ p._2)
+    new BasicDenseVectorRDD(calculatedData)
   }
 
-  def :*(other: RDD[BDV[Double]]): RDD[BDV[Double]] = {
+  def :*(other: RDD[BDV[Double]]): BasicDenseVectorRDD = {
     val joined = join(other)
-    joined.map(p => p._1 :* p._2)
+    val calculatedData = joined.map(p => p._1 :* p._2)
+    new BasicDenseVectorRDD(calculatedData)
   }
-}
 
-/**
- * The helper for BasicDenseVectorRDD class
- */
-object BasicDenseVectorRDD {
-  implicit def array2BDV(rdd: RDD[Array[Double]]): RDD[BDV[Double]] = {
-    rdd.map(p => BDV(p))
-  }
-  
-  implicit def BDV2Array(rdd: RDD[BDV[Double]]): RDD[Array[Double]] = {
-    rdd.map(p => p.toArray)
-  }
 }
