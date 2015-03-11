@@ -11,7 +11,7 @@ import breeze.linalg.{DenseVector => BDV}
  *
  */
 @SerialVersionUID(1L)
-class BreezeDenseVectorRDDCalculator(rdd: RDD[BDV[Double]]) extends Serializable {
+class BreezeDenseVectorRDDCalculator(val rdd: RDD[BDV[Double]]) extends Serializable {
   lazy val rddWithIndex: RDD[(Long, BDV[Double])] = rdd.zipWithIndex().map(p => (p._2, p._1))
 
   /**
