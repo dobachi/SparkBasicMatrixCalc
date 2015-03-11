@@ -30,8 +30,8 @@ Then, you can use BasicDenseVectorRDD class and it's helper methods.
 
 ::
 
- scala> import net.dobachi.spark.BasicDenseVectorRDD
- scala> import net.dobachi.spark.BasicDenseVectorRDD._
+ scala> import breeze.linalg.{DenseVector => BDV}
+ scala> import net.dobachi.spark.BreezeDenseVectorRDDCalculator
 
  (snip)
 
