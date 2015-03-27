@@ -26,13 +26,43 @@ Please execute spark-shell/spark-submit command with --jars option.
 
  $ spark-shell --jars target/scala-2.10/basicmatrixcalc.jar
 
-Then, you can use BasicDenseVectorRDD class and it's helper methods.
+First, you may generate sample data with Spark function.
 
 ::
 
- scala> import breeze.linalg.{DenseVector => BDV}
- scala> import net.dobachi.spark.BreezeDenseVectorRDDCalculator
+ scala> import org.apache.spark.SparkContext
+ scala> import org.apache.spark.mllib.random.RandomRDDs._
+ scala> val arrData1 = normalRDD(sc, 1000L, 10)
+ scala> val arrData2 = normalRDD(sc, 1000L, 10)
 
- (snip)
+You obtained data1 and data2 as RDD[Array[Double]].
+
+Then, you should convert this RDD to RDD of Breeze DenseVector.::
+
+ scala> import breeze.linalg.{DenseVector => BDV}
+ scala> val bdv1 = arrData1.map(p => BDV(p))
+ scala> val bdv2 = arrData2.map(p => BDV(p))
+
+If you want to generate test data of RDD[BDV[Double]] directly,
+you can use Breeze random function.
+
+::
+
+ scala> val dummy1 = sc.parallelize(0 to 999)
+ scala> val dummy2 = sc.parallelize(0 to 999)
+ scala> val dbdv1 = dummy1.map(p => BDV.rand(1))
+ scala> val dbdv2 = dummy2.map(p => BDV.rand(1))
+
+Then, you can use BDVDoubleCalc to calculate Elementwise addition.
+
+::
+
+ scala> import net.dobachi.spark.BDVDoubleCalc
+ scala> val bdvDoubleCalc1 = BDVDoubleCalc(bdv1)
+ scala> val sum = bdvDoubleCalc1 :+ bdv2
+
+Please access member "rdd" to obtain RDD[BDV[Double]] from BDVDoubleCalc
+
+ scala> val result = sum.rdd
 
 .. vim: ft=rst tw=0
