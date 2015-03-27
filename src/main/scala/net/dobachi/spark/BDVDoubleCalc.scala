@@ -11,7 +11,7 @@ import breeze.linalg.{DenseVector => BDV}
  *
  */
 @SerialVersionUID(1L)
-class BreezeDenseVectorRDDCalculator(val rdd: RDD[BDV[Double]]) extends Serializable {
+class BDVDoubleCalc(val rdd: RDD[BDV[Double]]) extends Serializable {
   lazy val rddWithIndex: RDD[(Long, BDV[Double])] = rdd.zipWithIndex().map(p => (p._2, p._1))
 
   /**
@@ -25,29 +25,29 @@ class BreezeDenseVectorRDDCalculator(val rdd: RDD[BDV[Double]]) extends Serializ
     rddWithIndex.join(otherWithIndex).map(p => (p._2._1, p._2._2))
   }
 
-  def :+(other: RDD[BDV[Double]]): BreezeDenseVectorRDDCalculator = {
+  def :+(other: RDD[BDV[Double]]): BDVDoubleCalc = {
     val joined = join(other)
-    new BreezeDenseVectorRDDCalculator(joined.map(p => p._1 :+ p._2))
+    new BDVDoubleCalc(joined.map(p => p._1 :+ p._2))
   }
 
-  def :-(other: RDD[BDV[Double]]): BreezeDenseVectorRDDCalculator = {
+  def :-(other: RDD[BDV[Double]]): BDVDoubleCalc = {
     val joined = join(other)
-    new BreezeDenseVectorRDDCalculator(joined.map(p => p._1 :- p._2))
+    new BDVDoubleCalc(joined.map(p => p._1 :- p._2))
   }
 
-  def :/(other: RDD[BDV[Double]]): BreezeDenseVectorRDDCalculator = {
+  def :/(other: RDD[BDV[Double]]): BDVDoubleCalc = {
     val joined = join(other)
-    new BreezeDenseVectorRDDCalculator(joined.map(p => p._1 :/ p._2))
+    new BDVDoubleCalc(joined.map(p => p._1 :/ p._2))
   }
 
-  def :*(other: RDD[BDV[Double]]): BreezeDenseVectorRDDCalculator = {
+  def :*(other: RDD[BDV[Double]]): BDVDoubleCalc = {
     val joined = join(other)
-    new BreezeDenseVectorRDDCalculator(joined.map(p => p._1 :* p._2))
+    new BDVDoubleCalc(joined.map(p => p._1 :* p._2))
   }
 }
 
-object BreezeDenseVectorRDDCalculator {
+object BDVDoubleCalc {
   def apply(rdd: RDD[BDV[Double]]) = {
-    new BreezeDenseVectorRDDCalculator(rdd)
+    new BDVDoubleCalc(rdd)
   }
 }
