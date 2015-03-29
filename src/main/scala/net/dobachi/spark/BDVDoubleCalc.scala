@@ -28,7 +28,7 @@ class BDVDoubleCalc(val rdd: RDD[BDV[Double]]) extends Serializable {
   /**
    * Helper method to get a joined RDD with other BDVDoubleCalc's RDD[BDV]
    *
-   * @param other: Other BDVDoubleCalc instance
+   * @param otherBDVDoubleCalc: Other BDVDoubleCalc instance
    * @return Joined data (RDD[(BDV[Double], BDV[Double]))
    */
   private def join(otherBDVDoubleCalc: BDVDoubleCalc): RDD[(BDV[Double], BDV[Double])] = {
@@ -36,12 +36,12 @@ class BDVDoubleCalc(val rdd: RDD[BDV[Double]]) extends Serializable {
   }
 
   def :+(other: RDD[BDV[Double]]): BDVDoubleCalc = {
-    val joined = join(other)
+    val joined = join(othzer)
     new BDVDoubleCalc(joined.map(p => p._1 :+ p._2))
   }
 
   def :+(otherBDVDoubleCalc: BDVDoubleCalc): BDVDoubleCalc = {
-    val joined = join(otherBDVDoubleDalc)
+    val joined = join(otherBDVDoubleCalc)
     new BDVDoubleCalc(joined.map(p => p._1 :+ p._2))
   }
 
@@ -50,13 +50,28 @@ class BDVDoubleCalc(val rdd: RDD[BDV[Double]]) extends Serializable {
     new BDVDoubleCalc(joined.map(p => p._1 :- p._2))
   }
 
+  def :-(otherBDVDoubleCalc: BDVDoubleCalc): BDVDoubleCalc = {
+    val joined = join(otherBDVDoubleCalc)
+    new BDVDoubleCalc(joined.map(p => p._1 :- p._2))
+  }
+
   def :/(other: RDD[BDV[Double]]): BDVDoubleCalc = {
     val joined = join(other)
     new BDVDoubleCalc(joined.map(p => p._1 :/ p._2))
   }
 
+  def :/(otherBDVDoubleCalc: BDVDoubleCalc): BDVDoubleCalc = {
+    val joined = join(otherBDVDoubleCalc)
+    new BDVDoubleCalc(joined.map(p => p._1 :/ p._2))
+  }
+
   def :*(other: RDD[BDV[Double]]): BDVDoubleCalc = {
     val joined = join(other)
+    new BDVDoubleCalc(joined.map(p => p._1 :* p._2))
+  }
+
+  def :*(otherBDVDoubleCalc: BDVDoubleCalc): BDVDoubleCalc = {
+    val joined = join(otherBDVDoubleCalc)
     new BDVDoubleCalc(joined.map(p => p._1 :* p._2))
   }
 }
