@@ -80,4 +80,28 @@ object BDVDoubleCalc {
   def apply(rdd: RDD[BDV[Double]]) = {
     new BDVDoubleCalc(rdd)
   }
+
+  def elementWiseAdd(first: RDD[BDV[Double]], second: RDD[BDV[Double]]) = {
+    val firstBDVDoubleCalc = new BDVDoubleCalc(first)
+    val result = firstBDVDoubleCalc :+ second
+    result.rdd
+  }
+
+  def elementWiseSub(first: RDD[BDV[Double]], second: RDD[BDV[Double]]) = {
+    val firstBDVDoubleCalc = new BDVDoubleCalc(first)
+    val result = firstBDVDoubleCalc :- second
+    result.rdd
+  }
+
+  def elementWiseDiv(first: RDD[BDV[Double]], second: RDD[BDV[Double]]) = {
+    val firstBDVDoubleCalc = new BDVDoubleCalc(first)
+    val result = firstBDVDoubleCalc :/ second
+    result.rdd
+  }
+
+  def elementWiseMult(first: RDD[BDV[Double]], second: RDD[BDV[Double]]) = {
+    val firstBDVDoubleCalc = new BDVDoubleCalc(first)
+    val result = firstBDVDoubleCalc :* second
+    result.rdd
+  }
 }
