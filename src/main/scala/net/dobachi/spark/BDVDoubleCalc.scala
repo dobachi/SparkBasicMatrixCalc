@@ -36,7 +36,7 @@ class BDVDoubleCalc(val rdd: RDD[BDV[Double]]) extends Serializable {
   }
 
   def :+(other: RDD[BDV[Double]]): BDVDoubleCalc = {
-    val joined = join(othzer)
+    val joined = join(other)
     new BDVDoubleCalc(joined.map(p => p._1 :+ p._2))
   }
 
